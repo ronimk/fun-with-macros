@@ -5,6 +5,9 @@ I intend to first port it in lisp and afterwards expand on it through various me
   * allowing for wildcards, regexps etc. to be used in the stream consumation process
   *
   
-The first version (in the directory version-1) is a direct translation from Scheme to Common Lisp of the DSL of chapter 3 of Krishnamurthi's paper. The second version will be a compiler for the way Finite State Automatas are usually defined (with the stream consuming process having to end in an accepting state or it won't get accepted, and accepting states also being allowed to have state transitions away from them).
+The first version (in the directory version-1) is a direct translation from Scheme to Common Lisp of the DSL of chapter 3
+of Krishnamurthi's paper. The second version will be a compiler for the way Finite State Automatas are usually defined
+(with the stream consuming process having to end in an accepting state or it won't get accepted, and accepting states
+also being allowed to have state transitions away from them).
 
 The further revisions are intended to add something extra to the language (wildcards, regexp patterns and whatnot).
