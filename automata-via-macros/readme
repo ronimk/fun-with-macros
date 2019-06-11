@@ -4,7 +4,7 @@ This exercise in creating a simple, yet powerful DSL comes from Shriram Krishnam
 I intend to first port it in lisp and afterwards expand on it through various means:
   * allowing for accepting states to also have state transitions
   * allowing for wildcards, regexps etc. to be used in the stream consumation process
-  * (possibly) allowing for nondeterministic FSAs using breadth-first-searc mechanics
+  * (possibly) allowing for nondeterministic FSAs using breadth-first-search mechanics
   
 The first version (in the directory version-1) is a direct translation from Scheme to Common Lisp of the DSL of chapter 3
 of Krishnamurthi's paper. The second version will be a compiler for the way Finite State Automatas are usually defined
