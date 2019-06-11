@@ -1,0 +1,40 @@
+This second version includes accepting states, so that it resembles finite state automatas more.
+
+Now:
+(define m2
+  (automaton init
+    (init : (c → more))
+    (more : (a → more))
+            (d → more)
+            (r → end) )
+            (end : accept) ) ) 
+Creates a valid automaton which has an accepting state (end). Furthermore, if an automaton does not have
+an accepting state, it can never accept a stream.
+
+The automaton macro expands the above description of an automaton into a labels-block which returns the init function when evaluated:
+
+(labels ((init (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((c) (more (rest stream)))
+                (otherwise the-false-value) ) ) ) )
+         (more (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((a) (more (rest stream)) )
+                ((d) (more (rest stream)) )
+                ((r) (end (rest stream)) )
+                (otherwise the-false-value) ) ) ) )
+         (end (stream)
+           (cond
+             ((null stream) the-truth-value)
+             (T the-false-value) ) ) ))
+             
+One fun and tricky problem with this second version was having to be extra careful with the language-defined
+values: the-truth-value and the-false-value. Not using T and nil, which are both self-evaluating, meant
+that I got to practice thinking in three different abstraction levels simultaneously (the macro-call time,
+the macro-expansion time and the final-evaluation time)
