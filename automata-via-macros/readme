@@ -1,7 +1,7 @@
 This exercise in creating a simple, yet powerful DSL comes from Shriram Krishnamurthi's wonderful paper called "Automata via Macros".
 (https://cs.brown.edu/~sk/Publications/Papers/Published/sk-automata-macros/)
 
-I intend to first port it in lisp and afterwards expand on it through various means:
+I intend to first port it in Common Lisp and afterwards expand on it through various means:
   * allowing for accepting states to also have state transitions
   * allowing for wildcards, regexps etc. to be used in the stream consumation process
   * (possibly) allowing for nondeterministic FSAs using breadth-first-search mechanics
