@@ -55,7 +55,7 @@
     (h nil nil psetq-args) ) )
     
 (defun setq-gen (varpairs)
-  "generates the (setq #GXXXX val) expressions"
+  "generates the (setq var val) expressions"
   (mapcar #'(lambda (var-pair)
               `(setq ,(car var-pair) ,(cdr var-pair)) )
           varpairs ) )
