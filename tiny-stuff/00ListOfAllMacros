@@ -1,6 +1,10 @@
 All "Tiny Stuff" Macros in alphabetical order:
 
-I. PSETQ
-  My implementation of Common Lisp's parallel version of SETQ
+I. MY-PSETQ (in "psetq.lisp")
+  My implementation of Common Lisp's parallel version of SETQ - the first draft.
   This means that all new values of PSETQ variables are evaluated first, before any assignment operation.
   Therefore no previous assignment can affect any future assignments in the PSETQ expression.
+
+II. MY-PSETQ (v.2) (in "psetqv2.lisp")
+  An improved version of MY-PSETQ. using the full power of SETQ being able to assign more than one variable
+  simultaneously.
