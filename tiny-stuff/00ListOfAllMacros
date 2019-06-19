@@ -1,6 +1,6 @@
 All "Tiny Stuff" Macros in alphabetical order:
 
 I. PSETQ
-  a parallel version of SETQ
+  My implementation of Common Lisp's parallel version of SETQ
   This means that all new values of PSETQ variables are evaluated first, before any assignment operation.
   Therefore no previous assignment can affect any future assignments in the PSETQ expression.
