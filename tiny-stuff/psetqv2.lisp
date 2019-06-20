@@ -25,9 +25,7 @@
 ;;
 ;; > (macroexpand '(my-psetq x (1+ y) y (1+ z) z (1+ x)))
 ;; => ((lambda (#:G2 #:G1 #:G0)
-;;       (setq z #:G2)
-;;       (setq y #:G1)
-;;       (setq x #:G0) )
+;;       (setq z #:G2 y #:G1 x #:G0) )
 ;;     (1+ x) (1+ z) (1+ y) ) )
 ;;
 
