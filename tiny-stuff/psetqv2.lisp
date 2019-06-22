@@ -8,7 +8,7 @@
 ;; (my-psetq {symbol expr}*)
 ;; into the form:
 ;; ((lambda ({gensym-var}*)
-;;    (setq {gensym-var value}* )
+;;    (setq {symbol gensym-var}* )
 ;;  {expr}* )
 ;;
 ;; Example:
