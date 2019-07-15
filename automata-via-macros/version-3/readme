@@ -34,4 +34,4 @@ The automaton macro expands the above description of an automaton into a labels-
              ((null stream) the-truth-value)
              (T
               (case (first stream)
-                (otherwise the-false-value) ) ) ) ) ))
+                (otherwise (red (rest stream))) ) ) ) ) ))
