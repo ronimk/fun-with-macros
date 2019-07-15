@@ -7,8 +7,8 @@ Now:
     red
      (red :    (y → yellow))
      (yellow : (g → green))
-     (green : accept
-              (? -> red) ) )
+     (green :  accept
+               (? -> red) ) )
 Creates a valid automaton which has an accepting state (green). If the 'green' state reads in any other stream object, the control gets
 transformed to the 'red' state. ? works as a wildcard that matches any stream object.
 
