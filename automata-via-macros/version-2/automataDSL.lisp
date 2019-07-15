@@ -40,16 +40,14 @@
      (more : (a -> more)
              (d -> more)
              (r -> end) )
-       => ((more (stream)
-             (cond
-               ((null stream) the-truth-value)
-               (T
-                (case (first stream)
-                  ((a) (more (rest stream)))
-                  ((d) (more (rest stream)))
-                  ((r) (end (rest stream)))
-   The result can be turned into a proper labels-syntax
-   simply by list:ing labels in the front.
+       => (more (stream)
+            (cond
+              ((null stream) the-truth-value)
+              (T
+               (case (first stream)
+                 ((a) (more (rest stream)))
+                 ((d) (more (rest stream)))
+                 ((r) (end (rest stream))) ) ) ) )
    
    If the state is an accepting state, it is of the form
    (label : accept), and thus has to be dealth with
