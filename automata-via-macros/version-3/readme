@@ -1,7 +1,7 @@
 This third version includes accepting states that can consume streams, and wildcards.
 
 Now:
-(define traffic-lights
+(defun traffic-lights
   (automaton
     (:wildcard ?)
     red
