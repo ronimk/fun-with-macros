@@ -35,3 +35,5 @@ The automaton macro expands the above description of an automaton into a labels-
              (T
               (case (first stream)
                 (otherwise (red (rest stream))) ) ) ) ) ))
+
+NOTE: This is the initial solution, so the source code is still a bit of a mess. It will be cleaned up and tested some more in the future.
