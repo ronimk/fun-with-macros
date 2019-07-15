@@ -1,0 +1,21 @@
+The fourth version will have two major revisions:
+
+1. A 'choice' is introduced to a state transformation rule that can be used to
+   direct multipledifferent stream symbols into the same destination state from
+   one source state.
+   
+2. The main rule transformation function will be divided into two parts:
+      
+      The first part the looks up the rule transformation operation
+      and switches the control to the appropriate rule transformer.
+      After the rule transformer has finished its job, the main
+      transformation function will combine the transformed rule
+      with the rest of the transformed rules for a given state.
+      
+      The second part consists of a lookup table of rule transformers
+      that can be used to transform a given transformation rule of a
+      given state into a proper Common Lisp code. So far there will be
+      three such transformers:
+        a wildcard transformer
+        a choice transformer
+        and a generic fallback transformer.
