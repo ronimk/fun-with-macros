@@ -7,7 +7,7 @@ Now:
     (more : (a → more))
             (d → more)
             (r → end) )
-            (end : accept) ) ) 
+    (end : accept) ) ) 
 Creates a valid automaton which has an accepting state (end). Furthermore, if an automaton does not have
 an accepting state, it can never accept a stream.
 
