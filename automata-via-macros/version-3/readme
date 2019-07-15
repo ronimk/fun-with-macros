@@ -1,0 +1,36 @@
+This third version includes accepting states that can consume streams, and wildcards.
+
+Now:
+(define traffic-lights
+  (automaton
+    red
+    (red :    (y → yellow))
+    (yellow : (g → green))
+    (green : accept
+              (? -> red) )
+    :wildcard ? ) ) 
+Creates a valid automaton which has an accepting state (green). If the 'green' state reads in any other stream object, the control gets
+transformed to the 'red' state. ? works as a wildcard that matches any stream object.
+
+The automaton macro expands the above description of an automaton into a labels-block which returns the red function when evaluated:
+
+(labels ((red (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((y) (yellow (rest stream)))
+                (otherwise the-false-value) ) ) ) )
+         (yellow (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((g) (green (rest stream)))
+                (otherwise the-false-value) ) ) ) )
+         (green (stream)
+           (cond
+             ((null stream) the-truth-value)
+             (T
+              (case (first stream)
+                (otherwise the-false-value) ) ) ) ) ))
