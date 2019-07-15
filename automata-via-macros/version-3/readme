@@ -37,3 +37,7 @@ The automaton macro expands the above description of an automaton into a labels-
                 (otherwise (red (rest stream))) ) ) ) ) ))
 
 NOTE: This is the initial solution, so the source code is still a bit of a mess. It will be cleaned up and tested some more in the future.
+For example, at the moment, the wildcard rule checker has been hard-coded into the transform-rules function. It would be better
+to look up the actual transformation rule function for any special transformation rule. That way, new transformation rules could be
+added in a much more maneagable fashion.
+
