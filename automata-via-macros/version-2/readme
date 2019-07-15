@@ -1,7 +1,7 @@
 This second version includes accepting states, so that it resembles finite state automatas more.
 
 Now:
-(defun m2
+(setf m2
   (automaton init
     (init : (c → more))
     (more : (a → more)
