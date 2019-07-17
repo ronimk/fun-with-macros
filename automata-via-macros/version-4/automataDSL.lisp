@@ -92,7 +92,7 @@
 (funcall (funcall rule-transformation-ds 'install-rule)
          'generic
          #'(lambda (rule keyword-list) nil) ; We do not want a rule inference function for generic rules.
-         #'(lambda (rule rest)
+         #'(lambda (rule rest)              ; get-rule-type handles the checking for generic rules.
              (cons `((,(first rule))
                      (,(third rule) (rest stream)) )
                    rest ) ) )
