@@ -1,5 +1,5 @@
-; INCOMPLETE - there is a subtle bug that keeps breaking the system
-; Also, no choice rule will be implemented until the system works
+;; INCOMPLETE:
+;; More documentation needed and a choice rule needs to be added.
 
 ;;; The Common Lisp port of Shriram Krishnamurthi's wonderful automata DSL
 ;;; (https://cs.brown.edu/~sk/Publications/Papers/Published/sk-automata-macros/)
@@ -18,8 +18,9 @@
 (defparameter the-truth-value 'true)
 (defparameter the-accept-marker 'accept)
 
-; The rule-transformation installer:
+;; The rule-transformation data structure functionality:
 
+; First, some anaphoric helper macros:
 (defmacro aif (test-form then-form &optional else-form)
   `(let ((it ,test-form))
      (if it ,then-form ,else-form) ) )
@@ -29,27 +30,27 @@
         ((null (cdr args)) (car args))
         (t `(aif ,(car args) (aand ,@(cdr args)))) ) )
 
-
+; init-rules creates the a new rule transformation data structure for installing
+; new rules to the system and using them.
+; It creates a new object that can be used to install new rules, find a rule type
+; and get a rule transformer.
 (defun init-rules ()
   (let ((rule-inferers nil)
         (rule-transformers nil) )
     (labels ((install-rule (rule-type rule-inferer rule-transformer)
-               (push rule-inferers
-                     #'(lambda (rule keyword-list)
+               (push #'(lambda (rule keyword-list)
                          (if (funcall rule-inferer rule keyword-list)
-                             rule-type ) ) )
-               (setf (getf rule-transformers rule-label) rule-transformer) )
+                              rule-type ) )
+                     rule-inferers )
+               (setf (getf rule-transformers rule-type) rule-transformer) )
              (get-rule-type (rule keyword-list)
-               (some #'(lambda (rif)
-                         (funcall rif rule keyword-list) )
-                     rule-inferers ) )
-             (get-rule-transformer (rule-type)
-               (aif (getf rule-transformers rule-type)
+               (aif (some #'(lambda (rif)
+                              (funcall rif rule keyword-list) )
+                       rule-inferers )
                     it
-                    #'default-transformer ) )
-             (default-transformer (rule)
-               `((,(first rule))
-                 (,(third rule) (rest stream)) ) )
+                    'generic ) )
+             (get-rule-transformer (rule-type)
+               (getf rule-transformers rule-type) )
              (dispatch (msg)
                (case msg
                  ((get-rule-type) #'get-rule-type)
@@ -57,28 +58,47 @@
                  ((install-rule) #'install-rule) ) ) )
       #'dispatch ) ) )
 
+; rule-transformation-ds holds the RTDS
 (setf rule-transformation-ds (init-rules))
 
+;; The rule transformation data structure interface:
+; get-rule-type finds the type of the given rule
+; Examples:
+;   1. (get-rule-type (* -> red) '(:wildcard *)) => 'wildcard
+;   2. (get-rule-type (y -> yellow) '(:wildcard *)) => 'generic
 (defun get-rule-type (rule keyword-list)
   (funcall (funcall rule-transformation-ds 'get-rule-type) rule keyword-list) )
 
+; lookup-rule-transformer finds the transformer of the given rule's type:
 (defun lookup-rule-transformer (rule-type)
   (funcall (funcall rule-transformation-ds 'get-rule-transformer) rule-type) )
 
-(defun transform-rule (rule keyword-list)
-  (funcall (lookup-rule-transformer (get-rule-type rule keyword-list)) rule) )
+; transform-rule is the primary interface function that can be used to handle everything
+; necessary to transform a automaton rule(set) into a proper LISP code.
+(defun transform-rule (rule keyword-list rest)
+  (funcall (lookup-rule-transformer (get-rule-type rule keyword-list)) rule rest) )
 
-; Install the rules:
+;; Install code for the rules:
+; Install code for the wildcard rule:
 (funcall (funcall rule-transformation-ds 'install-rule)
          'wildcard
          #'(lambda (rule keyword-list)
-           (aand (get keyword-list :wildcard)
+           (aand (getf keyword-list :wildcard)
                  (eq (first rule) it) ) ) 
-         #'(lambda (rule)
-            (list `(otherwise ,(third rule) (rest stream))) ) )
+         #'(lambda (rule rest)
+            (list `(otherwise (,(third rule) (rest stream)))) ) )
 
+;Install code for the generic rule:
 
-; The main rule transformer:
+(funcall (funcall rule-transformation-ds 'install-rule)
+         'generic
+         #'(lambda (rule keyword-list) nil) ; We do not want a rule inference function for generic rules.
+         #'(lambda (rule rest)
+             (cons `((,(first rule))
+                     (,(third rule) (rest stream)) )
+                   rest ) ) )
+
+; The main rule transformer function:
 (defun transform-rules (rules keyword-list)
   "transforms a list of automaton rules into a case syntax:
    ({(<rule-label> -> <rule-dest>)}*)
@@ -96,7 +116,7 @@
              (if (null rules)
                  (funcall cont (list (list 'otherwise 'the-false-value)))
                  (h (rest rules) #'(lambda (rest-transformations)
-                                     (funcall cont (cons (transform-rule (first rules) keyword-list) rest-transformations ) )) ) ) ))
+                                     (funcall cont (transform-rule (first rules) keyword-list rest-transformations)) )) ) ))
     (h rules #'(lambda (x) x)) ) )
 
              
