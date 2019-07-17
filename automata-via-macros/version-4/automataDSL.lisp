@@ -88,8 +88,7 @@
          #'(lambda (rule rest)
             (list `(otherwise (,(third rule) (rest stream)))) ) )
 
-;Install code for the generic rule:
-
+;Install code for the generic fallback rule:
 (funcall (funcall rule-transformation-ds 'install-rule)
          'generic
          #'(lambda (rule keyword-list) nil) ; We do not want a rule inference function for generic rules.
