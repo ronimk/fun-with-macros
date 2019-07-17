@@ -19,3 +19,5 @@ The fourth version will have two major revisions:
         a wildcard transformer
         a choice transformer
         and a generic fallback transformer.
+
+At the moment the general idea has been designed and programmed, but the system is still incomplete/buggy.
