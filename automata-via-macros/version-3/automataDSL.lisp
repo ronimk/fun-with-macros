@@ -36,7 +36,8 @@
      ((a -> more) (d -> more) (r -> end))
        => (((a) (more (rest stream)))
            ((d) (more (rest stream)))
-           ((r) (end (rest stream))) )
+           ((r) (end (rest stream)))
+           (otherwise the-false-value) )
 
    The keyword list is currently used to recognize a wildcard symbol,
    but could be expanded to handle other things that alter
