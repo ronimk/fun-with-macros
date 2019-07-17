@@ -41,7 +41,7 @@
    The keyword list is currently used to recognize a wildcard symbol,
    but could be expanded to handle other things that alter
    the standard automata rule generation as well."
-  (let ((the-wildcard (find-keyword-value :wildcard keyword-list)) )
+  (let ((the-wildcard (getf keyword-list :wildcard)) )
     (labels ((rule-label (rule)
                (first rule) )
              (rule-dest (rule)
@@ -58,13 +58,6 @@
                                  (,(rule-dest first-rule) (rest stream) ) )
                                (h (rest rules)) ) ) ) ) ) )
       (h rules) ) ) )
-
-(defun find-keyword-value (keyword keyword-list)
-  (cond
-   ((null keyword-list) nil)
-   ((eq keyword (car keyword-list))
-    (cadr keyword-list))
-   (T (find-keyword keyword (cddr keyword-list))) ) )
              
 (defun make-state-fn (state-expr keyword-list)
   "Constructs a labels-syntax object from the given automaton
