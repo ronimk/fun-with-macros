@@ -1,6 +1,3 @@
-;; INCOMPLETE:
-;; More documentation needed and a choice rule needs to be added.
-
 ;;; The Common Lisp port of Shriram Krishnamurthi's wonderful automata DSL
 ;;; (https://cs.brown.edu/~sk/Publications/Papers/Published/sk-automata-macros/)
 ;;; this is the port for the final version of the paper.
@@ -17,6 +14,9 @@
 (defparameter the-false-value 'false)
 (defparameter the-truth-value 'true)
 (defparameter the-accept-marker 'accept)
+(defparameter the-generic-rule-type 'generic)
+(defparameter the-wildcard-rule-type 'wildcard)
+(defparameter the-choice-rule-type 'choice)
 
 ;; The rule-transformation data structure functionality:
 
@@ -48,7 +48,7 @@
                               (funcall rif rule keyword-list) )
                        rule-inferers )
                     it
-                    'generic ) )
+                    the-generic-rule-type ) )
              (get-rule-transformer (rule-type)
                (getf rule-transformers rule-type) )
              (dispatch (msg)
@@ -58,44 +58,99 @@
                  ((install-rule) #'install-rule) ) ) )
       #'dispatch ) ) )
 
-; rule-transformation-ds holds the RTDS
+; rule-transformation-ds contains the RTDS:
 (setf rule-transformation-ds (init-rules))
 
 ;; The rule transformation data structure interface:
-; get-rule-type finds the type of the given rule
-; Examples:
-;   1. (get-rule-type (* -> red) '(:wildcard *)) => 'wildcard
-;   2. (get-rule-type (y -> yellow) '(:wildcard *)) => 'generic
 (defun get-rule-type (rule keyword-list)
+" get-rule-type finds the type of the given rule
+  Examples:
+    1. (get-rule-type (* -> red) '(:wildcard *)) => 'wildcard
+    2. (get-rule-type (y -> yellow) '(:wildcard *)) => 'generic"
   (funcall (funcall rule-transformation-ds 'get-rule-type) rule keyword-list) )
 
-; lookup-rule-transformer finds the transformer of the given rule's type:
+
 (defun lookup-rule-transformer (rule-type)
+" lookup-rule-transformer finds the transformer of the given rule's type."
   (funcall (funcall rule-transformation-ds 'get-rule-transformer) rule-type) )
 
-; transform-rule is the primary interface function that can be used to handle everything
-; necessary to transform a automaton rule(set) into a proper LISP code.
 (defun transform-rule (rule keyword-list rest)
+" transform-rule is the primary interface function that can be used to handle everything
+  necessary to transform a automaton rule(set) into a proper LISP code."
   (funcall (lookup-rule-transformer (get-rule-type rule keyword-list)) rule rest) )
+
+
+(defun rule-installer (rule-type rule-inferer rule-transformer)
+" A helper function to insall a new rule transformation objects to the system.
+  An RTO consists of three things:
+ 
+    1. rule-type, which is a non-NIL symbol that uniquely identifies the type
+       of the given RTO.
+ 
+    2. rule-inferer is a predicate function that is used to check
+       whether a rule is of a certain type.
+       The rule-inferer predicate takes in a rule and a keyword list
+       and returns either the rule type or NIL if the rule does not match.
+ 
+    3. rule-transformer is a function that handles transforming a given
+       rule of a matching rule type into LISP code AND combining it
+       with the rest of the rule transformations.
+       rule-transformer functions take in the current rule to be combined
+       and the rest of transformed rules that follow the current rule
+ 
+  The main rule transformer (transform-rules) delegates the work of combining
+  transformed rules to individual rule transform objects by using a continuation
+  passing style. This allows more flexibility, better handling and easier
+  maintenance in installing and working with RTOs."
+  (funcall (funcall rule-transformation-ds 'install-rule)
+           rule-type
+           rule-inferer
+           rule-transformer ) )
 
 ;; Install code for the rules:
 ; Install code for the wildcard rule:
-(funcall (funcall rule-transformation-ds 'install-rule)
-         'wildcard
-         #'(lambda (rule keyword-list)
-           (aand (getf keyword-list :wildcard)
-                 (eq (first rule) it) ) ) 
-         #'(lambda (rule rest)
-            (list `(otherwise (,(third rule) (rest stream)))) ) )
+(rule-installer the-wildcard-rule-type
+                #'(lambda (rule keyword-list)
+                    (aand (getf keyword-list :wildcard)
+                    (eq (first rule) it) ) ) 
+                #'(lambda (rule rest)
+                    (list `(otherwise (,(third rule) (rest stream)))) ) )
 
-;Install code for the generic fallback rule:
-(funcall (funcall rule-transformation-ds 'install-rule)
-         'generic
-         #'(lambda (rule keyword-list) nil) ; We do not want a rule inference function for generic rules.
-         #'(lambda (rule rest)              ; get-rule-type handles the checking for generic rules.
-             (cons `((,(first rule))
-                     (,(third rule) (rest stream)) )
-                   rest ) ) )
+
+; Install code for the choice rule:
+; To simplify things, choice can only be used for accepting
+; single predefined symbols; no wildcards can be used nor
+; can choices be nested nor any other special rules used.
+; (It seems to make little sense to combine
+;  any special rules with the choice rule anyway...)
+(rule-installer the-choice-rule-type
+                #'(lambda (rule keyword-list)
+                    (consp (first rule)) )
+                #'(lambda (rule rest)
+                    (append (reduce #'(lambda (r1 rest)
+                                      (funcall (lookup-rule-transformer the-generic-rule-type) r1 rest) )
+                                 (choice->ruleset rule)
+                                 :from-end t
+                                 :initial-value nil)
+                          rest ) ) )
+
+; choice->ruleset transforms a choice rule into a set of generic rules.
+; Example:
+; (coice->ruleset '((r y g) -> red))
+; => ((r -> red) (y -> red) (g -> red))
+(defun choice->ruleset (choice-rule)
+  (let ((rule-dest (caddr choice-rule)))
+    (mapcar #'(lambda (rule-sym)
+                (list rule-sym '-> rule-dest) )
+           (first choice-rule) ) ) )
+
+; Install code for the generic rule:
+(rule-installer the-generic-rule-type
+                #'(lambda (rule keyword-list) nil) ; We do not want a rule inference function for generic rules.
+                #'(lambda (rule rest)              ; get-rule-type handles that for us.
+                    (cons `((,(first rule))
+                            (,(third rule) (rest stream)) )
+                          rest ) ) )
 
 ; The main rule transformer function:
 (defun transform-rules (rules keyword-list)
