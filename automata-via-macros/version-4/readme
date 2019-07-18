@@ -19,6 +19,44 @@ The fourth version has two major revisions:
         a wildcard transformer
         a choice transformer
         and a generic fallback transformer.
+        
+Now:
+(setf traffic-lights
+  (automaton
+    (:wildcard *)
+    red
+     (red :    (y → yellow))
+     (yellow : (g → green))
+     (green :  accept
+               ((r y g) -> red) ) ) )
+Creates a valid automaton which has an accepting state (green).
+If the 'green' state reads in any other valid stream symbol (r y or g), the control gets transformed to the 'red' state.
+The symbol * works as a wildcard that matches any stream symbol.
+
+The automaton macro expands the above description of an automaton into a labels-block which returns the red function when evaluated:
+
+(labels ((red (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((y) (yellow (rest stream)))
+                (otherwise the-false-value) ) ) ) )
+         (yellow (stream)
+           (cond
+             ((null stream) the-false-value)
+             (T
+              (case (first stream)
+                ((g) (green (rest stream)))
+                (otherwise the-false-value) ) ) ) )
+         (green (stream)
+           (cond
+             ((null stream) the-truth-value)
+             (T
+              (case (first stream)
+                ((r) (red (rest stream)))
+                ((y) (red (rest stream)))
+                ((g) (red (rest stream))) ) ) ) ) ))
 
 A bit more throrough testing is still necessary, otherwise this version is complete.
 
