@@ -1,4 +1,4 @@
-The fourth version will have two major revisions:
+The fourth version has two major revisions:
 
 1. A 'choice' is introduced to a state transformation rule that can be used to
    direct multipledifferent stream symbols into the same destination state from
@@ -20,9 +20,8 @@ The fourth version will have two major revisions:
         a choice transformer
         and a generic fallback transformer.
 
-At the moment the general idea has been designed and programmed, but the system is still incomplete.
-It lacks the choice rule, more thorough testing and proper documenting.
+A bit more throrough testing is still necessary, otherwise this version is complete.
 
-Also, currently the system is designed to strictly handle deterinistic automata through the use of
+Currently the system is designed to handle only deterinistic automata through the use of
 Common Lisp case-syntax. In order to get the system to also simulate nondetermministic automata,
 some major revisions for the creation of the automata code is in order.
