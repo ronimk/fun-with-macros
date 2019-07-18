@@ -33,6 +33,14 @@ Creates a valid automaton which has an accepting state (green).
 If the 'green' state reads in any other valid stream symbol (r y or g), the control gets transformed to the 'red' state.
 The symbol * works as a wildcard that matches any stream symbol.
 
+The choice rule is always of the form
+((symbol-1 symbol-2 symbol-3 ... symbol-n) -> destination)
+
+or in kleene star notation:
+(({symbol}*) -> destination)
+
+Neither wildcards, nested choices nor any other special rules should be used in place of any symbol-i.
+
 The automaton macro expands the above description of an automaton into a labels-block which returns the red function when evaluated:
 
 (labels ((red (stream)
@@ -57,6 +65,8 @@ The automaton macro expands the above description of an automaton into a labels-
                 ((r) (red (rest stream)))
                 ((y) (red (rest stream)))
                 ((g) (red (rest stream))) ) ) ) ) ))
+
+New rule transformer objects (RTOs) can be installed to the system via rule-installer.
 
 A bit more throrough testing is still necessary, otherwise this version is complete.
 
