@@ -6,7 +6,7 @@ The fourth version has two major revisions:
    
 2. The main rule transformation function will be divided into two parts:
       
-      The first part the looks up the rule transformation operation
+      The first part looks up the rule transformation operation
       and switches the control to the appropriate rule transformer.
       After the rule transformer has finished its job, the main
       transformation function will combine the transformed rule
