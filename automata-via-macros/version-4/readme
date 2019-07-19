@@ -29,7 +29,7 @@ Now:
                ((r y g) -> red) ) ) )
 Creates a valid automaton which has an accepting state (green).
 If the 'green' state reads in any other valid stream symbol (r y or g), the control gets transformed to the 'red' state.
-The symbol * can be used as a wildcard that matches any stream symbol.
+The chosen wildcard symbol can be used as a wildcard that matches any stream symbol.
 
 The choice rule is always of the form
 ((symbol-1 symbol-2 symbol-3 ... symbol-n) -> destination)
