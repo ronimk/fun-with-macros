@@ -72,8 +72,8 @@ Currently the system is designed to handle only deterinistic automata through th
 Common Lisp case-syntax. In order to get the system to also simulate nondetermministic automata,
 some major revisions for the creation of the automata code is in order.
 
-Another quirk of the current (and the previous) versio is that the wildcard mechanism, as it is currently
-implemented, break the typical automata-alphabet duality by allowing for ANY stream symbol to be used in
+Another quirk of the current (and the previous) version is that the wildcard mechanism, as it is currently
+implemented, breaks the standard FSA definition by allowing for ANY stream symbol to be used in
 certain points of the automaton emulation process. A future version should be augmented with an explicit
 alphabet correctness verification. That will require some minor modifications to the entire system - mainly
 the automaton-macro having to take in an alphabet for the automaton being created, injecting that alphabet
