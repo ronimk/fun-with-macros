@@ -6,16 +6,14 @@ The fourth version has two major revisions:
    
 2. The main rule transformation function will be divided into two parts:
       
-      The first part looks up the rule transformation operation
-      and switches the control to the appropriate rule transformer.
-      After the rule transformer has finished its job, the main
-      transformation function will combine the transformed rule
-      with the rest of the transformed rules for a given state.
+      The first part controls how all the transformed rules
+      are to be combined/chained together. It handles all the
+      rule transformation "bookkeeping", so to speak.
       
       The second part consists of a lookup table of rule transformers
-      that can be used to transform a given transformation rule of a
-      given state into a proper Common Lisp code. So far there will be
-      three such transformers:
+      that can be used to transform a given rule of a given state into
+      a proper Common Lisp code. So far there are be three such
+      transformers:
         a wildcard transformer
         a choice transformer
         and a generic fallback transformer.
@@ -31,7 +29,7 @@ Now:
                ((r y g) -> red) ) ) )
 Creates a valid automaton which has an accepting state (green).
 If the 'green' state reads in any other valid stream symbol (r y or g), the control gets transformed to the 'red' state.
-The symbol * works as a wildcard that matches any stream symbol.
+The symbol * can be used as a wildcard that matches any stream symbol.
 
 The choice rule is always of the form
 ((symbol-1 symbol-2 symbol-3 ... symbol-n) -> destination)
@@ -73,3 +71,11 @@ A bit more throrough testing is still necessary, otherwise this version is compl
 Currently the system is designed to handle only deterinistic automata through the use of
 Common Lisp case-syntax. In order to get the system to also simulate nondetermministic automata,
 some major revisions for the creation of the automata code is in order.
+
+Another quirk of the current (and the previous) versio is that the wildcard mechanism, as it is currently
+implemented, break the typical automata-alphabet duality by allowing for ANY stream symbol to be used in
+certain points of the automaton emulation process. A future version should be augmented with an explicit
+alphabet correctness verification. That will require some minor modifications to the entire system - mainly
+the automaton-macro having to take in an alphabet for the automaton being created, injecting that alphabet
+as a data structure to the compiled automaton, and the compiler injecting alphabet verification code into
+the system, which will be used every time a new symbol is read in.
