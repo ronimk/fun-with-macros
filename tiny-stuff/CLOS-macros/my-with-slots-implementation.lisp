@@ -19,7 +19,7 @@
     `(symbol-macrolet ,symbol-expansion-forms ,@body) ) )
 
 ; make-accessor-form creates lists of the form:
-; '(slot-value [instance] [slot-name])
+; '(slot-value [instance] (quote [slot-name]))
 ; which are used within my-with-slots to bind slot-variables to their accessor forms.
 (defun make-accessor-form (instance slot-name)
   (list 'slot-value instance (list 'quote slot-name)) )
