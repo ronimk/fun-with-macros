@@ -5,7 +5,7 @@
 ; http://www.lispworks.com/documentation/HyperSpec/Body/m_w_slts.htm)
 
 (defmacro my-with-slots (slot-entries instance-form &body body)
-  (let* ((instance instance-form)                                                ; according to CLHS, the supplied instance-form should be evaluated
+  (let* ((instance instance-form)                                                ; according to CLHS, the supplied instance-form should be evaluated. At the moment, this is broken
          (symbol-expansion-forms                                                 ; The symbol-macrolet's symbol-expansion-forms are computed beforehand
            (mapcar (lambda (slot-entry)                                          ; To compute the symbol-expansion-forms each slot-entry given will be
                      (let ((var (if (symbolp slot-entry)                         ; examined based on whether it is of the form 'symbol' or of the form
