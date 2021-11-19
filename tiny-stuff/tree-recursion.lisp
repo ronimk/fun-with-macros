@@ -80,5 +80,5 @@
 ; implement a little bit of "domain specific syntax" (in the form of the leaf-case and recur-on keywords) into the macro and to work on
 ; getting it done properly, with a compile-time error checking on the special symbols used.
 ;
-; Of course one could have simply used keyword parameters for the leaf-case and recur arguments, so that part was purely for me to "tune myself in"
+; Of course one could have simply used keyword parameters for the leaf-case and recur arguments, so that part was purely for me to gently "tune myself in"
 ; to some of the concepts I will need for my bachelor's thesis.
