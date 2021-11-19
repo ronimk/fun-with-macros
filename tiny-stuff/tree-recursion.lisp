@@ -1,3 +1,4 @@
+;;;;; tree-recursion v. 1
 ;;; The tree-recursion is a fun little macro that recurs through theoretically on any amount of lists given to it,
 ;;; performing a single, task to each leaf of the given trees.
 ;;;
@@ -81,4 +82,18 @@
 ; getting it done properly, with a compile-time error checking on the special symbols used.
 ;
 ; Of course one could have simply used keyword parameters for the leaf-case and recur arguments, so that part was purely for me to gently "tune myself in"
-; to some of the concepts I will need for my bachelor's thesis.
+; to some of the concepts I will need for my bachelor's thesis. On the other hand, the special words used by the maco can be further expanded on, by allowing
+; implicit progn calls, for example, to make the below code look neater:
+;
+; (tree-traversal (lst1 lst2 ...)
+;                 :leaf-case (progn exp1 exp2 ...)
+;                 :recur-on ...)
+;
+; VS.
+;
+; (tree-traversal (lst1 lst2 ...)
+;   (leaf-case
+;     exp1
+;     exp2
+;     ... )
+;   (recur-on ...) )
