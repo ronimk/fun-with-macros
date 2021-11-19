@@ -76,6 +76,6 @@
         (recur-on pat-match)
         (leaf-case eql) ) ) )
 
-; While a simple macro, tree-recursion shows how to shift the work on list reductions to compile-phase. It was also really fun to
+; While a simple macro, tree-recursion shows how to shift the work on list reductions to compile-phase, it was also really fun to
 ; implement a little bit of "domain specific syntax" (in the form of the leaf-case and recur-on keywords) into the macro and to work on
 ; getting it done properly, with a compile-time error checking on the special symbols used.
