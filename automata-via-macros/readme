@@ -7,8 +7,6 @@ I intend to first port it in Common Lisp and afterwards expand on it through var
   * (possibly) allowing for nondeterministic FSAs using breadth-first-search mechanics
   
 The first version (in the directory version-1) is a direct translation from Scheme to Common Lisp of the DSL of chapter 3
-of Krishnamurthi's paper. The second version is a compiler for *almost* the way Finite State Automatas are usually defined
-(with the stream consuming process having to end in an accepting state or it won't get accepted, but the accepting states
-are not allowed to have state transitions away from them).
+of Krishnamurthi's paper. The second version is a compiler for the DSL of chapter 4.
 
 The further revisions are intended to add something extra to the language (wildcards, regexp patterns and whatnot).
