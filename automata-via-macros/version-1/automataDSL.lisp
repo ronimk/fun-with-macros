@@ -25,13 +25,12 @@
             rules ) ) )
              
 (defun make-state-fn (state-expr)
-  "Constructs a labels-syntax object from the given automaton
-   state expression to be injected into a labels-syntax:
+  "Constructs a state function for the given state expression:
    Example:
      (more : (a -> more)
              (d -> more)
              (r -> end) )
-       => ((more (stream)
+       => (more (stream)
              (cond
                ((null stream) the-truth-value)
                (T
@@ -39,8 +38,7 @@
                   ((a) (more (rest stream)))
                   ((d) (more (rest stream)))
                   ((r) (end (rest stream)))
-   The result can be turned into a proper labels-syntax
-   simply by listing 'labels in the front."
+                  (otherwise the-false-value) ) ) )"
   `( ,(car state-expr) (stream)
      (cond
        ((null stream) the-truth-value)
