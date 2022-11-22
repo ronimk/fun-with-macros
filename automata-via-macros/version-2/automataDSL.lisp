@@ -2,14 +2,6 @@
 ;;; (https://cs.brown.edu/~sk/Publications/Papers/Published/sk-automata-macros/)
 ;;; this is the port for the final version of the paper.
 
-;; Note that the parenthesis indentation has been adopted
-;; from the book "Lisp in Small Pieces". While it may seem
-;; a bit odd at first to have spaces between trailing
-;; parentheses whenever the matching opening parentese is not
-;; on the same line as the last closing parenthese, I have
-;; found that style so useful that it has become a habit for
-;; me to write lisp code in that way.
-
 ; a few special values the language needs: 
 (defparameter the-false-value 'false)
 (defparameter the-truth-value 'true)
@@ -34,8 +26,7 @@
             rules ) ) )
              
 (defun make-state-fn (state-expr)
-  "Constructs a labels-syntax object from the given automaton
-   state expression to be injected into a labels-syntax:
+  "Constructs a state function for the given state expression:
    Example:
      (more : (a -> more)
              (d -> more)
