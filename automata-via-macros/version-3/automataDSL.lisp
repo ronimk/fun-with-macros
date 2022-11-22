@@ -15,14 +15,6 @@
 ;;;                (end : accept (a -> next-a) (b -> next-b) (? -> doomed))
 ;;;                (doomed) )
 
-;; Note that the parenthesis indentation has been adopted
-;; from the book "Lisp in Small Pieces". While it may seem
-;; a bit odd at first to have spaces between trailing
-;; parentheses whenever the matching opening parentese is not
-;; on the same line as the last closing parenthese, I have
-;; found that style so useful that it has become a habit for
-;; me to write lisp code in that way.
-
 ; a few special values the language needs: 
 (defparameter the-false-value 'false)
 (defparameter the-truth-value 'true)
@@ -61,20 +53,19 @@
       (h rules) ) ) )
              
 (defun make-state-fn (state-expr keyword-list)
-  "Constructs a labels-syntax object from the given automaton
-   state expression to be injected into a labels-syntax:
+  "Constructs a state function for the given state expression:
    Example:
      (more : (a -> more)
              (d -> more)
              (r -> end) )
        => (more (stream)
             (cond
-              ((null stream) the-false-value)
+              ((null stream) the-truth-value)
               (T
                (case (first stream)
                  ((a) (more (rest stream)))
                  ((d) (more (rest stream)))
-                 ((r) (end (rest stream))) ) ) ) ))
+                 ((r) (end (rest stream))) ) ) ) )
    
    If the state is an accepting state, it is of the form
    (label : accept), and thus has to be dealth with
