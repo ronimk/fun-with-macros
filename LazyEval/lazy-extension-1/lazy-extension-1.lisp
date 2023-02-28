@@ -38,15 +38,15 @@
   (aif (binding-exp-p exp)
        (funcall (binding-form-body-forcer-fn it) force-vars exp)
        (cond ((null exp) nil)
-             ((force-exp-p exp) exp)
+             ((force-exp-p exp) exp) ;; if exp is already forced, don't try re-forcing it.
              ((listp exp)
-              (cons (delay-forcer force-vars (car exp))
-                    (delay-forcer force-vars (cdr exp)) ) )
+              (cons (delay-forcer force-vars (car exp))     ;; for lists, traverse all the leaves on both the car
+                    (delay-forcer force-vars (cdr exp)) ) ) ;; and the cdr positions
              ((symbolp exp)
-              (if (member exp force-vars)
-                  (list 'force exp)
-                   exp ) )
-             (t exp) ) ) )
+              (if (member exp force-vars) ;; for a SYMBOL that equals one of the forcable symbols,
+                  (list 'force exp)       ;; force the symbol
+                   exp ) )     ;; If exp doesn't equal any of the forcable variable names
+             (t exp) ) ) )     ;; or if exp is not anything that can be forced, do nothing to exp
 
 
 ;; The primitives of the language:
@@ -57,6 +57,9 @@
       `(progn ,@(mapcar #'(lambda (exp)
                             (delay-forcer var-list exp) )
                         body )) ) )
+;; TODO: with-forced-vars is not actually recognized by the system yet,
+;;       so install it into the system. (See README.md) for why this isn't
+;;       technically a problem but should still be fixed...
   
 (defmacro flambda (forced-var-list params &body body)
   (let ((params (if (eq params :repeat) forced-var-list params)))  ;; careful with shared list structures, Eugene!
