@@ -9,22 +9,36 @@ following macros:
 * fflambda (fully-forced-lambda)
 * ffdefun  (fully-forced-defun)
  
-The  following example code show how these macros can be used. The variables that 
-are in bold and italic (**_var_**) will be automatically forced in the resulting expression:
+The  following example code show how these macros can be used:
 
 (let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
       (e (delay 1)) (x (delay 1)) (z (delay 1)) )
   (with-forced-vars (a b e x)
     (+ (funcall (flambda (x) :repeat
-                  (fdefun z+x (z) () (+ **_z_** **_x_**))
+                  (fdefun z+x (z) () (+ z x))
                     (z+x) )
-                  (delay (* 3 **_x_**)) ) ;; => 4
-       (let ((b ((lambda (x) (+ **_a_** **_b_** x c)) **_e_**)) ;; b := 4
+                  (delay (* 3 x)) ) ;; => 4
+       (let ((b ((lambda (x) (+ a b x c)) e)) ;; b := 4
               e )                                               ;; e := NIL
-         (+ b c **_x_** d ;; => 4+1+1+1
+         (+ b c x d ;; => 4+1+1+1
            (if (null e) 0 1) ) ) ;; +0 = 7
-       **_b_** **_e_** ) ) ) ;; +1+1
+       b e ) ) ) ;; +1+1
 =>	13  ;; 4 + 7 + 1 + 1 = 13
+
+The macroexpander would then turn the code into:
+
+(let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
+      (e (delay 1)) (x (delay 1)) (z (delay 1)) )
+  (with-forced-vars (a b e x)
+    (+ (funcall (flambda (x) :repeat
+                  (fdefun z+x (z) () (+ (force z) (force x)))
+                    (z+x) )
+                  (delay (* 3 (force x))) ) ;; => 4
+       (let ((b ((lambda (x) (+ (force a) (force b) x c)) (force e)))
+              e )
+         (+ b c (force x) d
+           (if (null e) 0 1) ) )
+       (force b) (force e) ) ) )
 
 As can be seen, nested binding forms, like lambda and let, inside these macros will override the automatic forcing mechanism.
 Currently only nested lambda- and let-forms are installed into the system to override the automatic forcing mechanism, nothing
