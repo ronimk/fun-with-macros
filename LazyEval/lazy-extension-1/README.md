@@ -70,4 +70,6 @@ Otherwise, the following expression, for example:
 Would be macro-expanded into the expression below, which would clearly produce errors when compiling or interpreting: <br />
 
 (flambda (x) (let (((force x) (+ (force x) 1)) (force x)))
+
+TODO: add the syntax of the language here
 </pre>
