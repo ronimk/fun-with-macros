@@ -10,20 +10,20 @@ following macros:
 * ffdefun  (fully-forced-defun)
  
 The  following example code show how these macros can be used. The variables that 
-are in bold and italic will be automatically forced in the resulting expression:
+are in bold and italic (**_var_**) will be automatically forced in the resulting expression:
 
 (let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
       (e (delay 1)) (x (delay 1)) (z (delay 1)) )
   (with-forced-vars (a b e x)
     (+ (funcall (flambda (x) :repeat
-                  (fdefun z+x (z) () (+ </pre>**_z_**<pre> </pre>**_x_**<pre>))
+                  (fdefun z+x (z) () (+ **_z_** **_x_**))
                     (z+x) )
-                  (delay (* 3 </pre>**_x_**<pre>)) ) ;; => 4
-       (let ((b ((lambda (x) (+ </pre>**_a_**<pre> </pre>**_b_**<pre> x c)) </pre>**_e_**<pre>)) ;; b := 4
+                  (delay (* 3 **_x_**)) ) ;; => 4
+       (let ((b ((lambda (x) (+ **_a_** **_b_** x c)) **_e_**)) ;; b := 4
               e )                                               ;; e := NIL
-         (+ b c </pre>**_x_**<pre> d ;; => 4+1+1+1
+         (+ b c **_x_** d ;; => 4+1+1+1
            (if (null e) 0 1) ) ) ;; +0 = 7
-       </pre>**_b_**<pre> </pre>**_e_**<pre> ) ) ) ;; +1+1
+       **_b_** **_e_** ) ) ) ;; +1+1
 =>	13  ;; 4 + 7 + 1 + 1 = 13
 
 As can be seen, nested binding forms, like lambda and let, inside these macros will override the automatic forcing mechanism.
