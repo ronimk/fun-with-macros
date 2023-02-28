@@ -122,18 +122,6 @@ Eventually all flambda and fdefun expressions get translated into lambda/fdefun 
      (WITH-FORCED-VARS (NUMBER POS ZERO NEG)
        (COND ((> NUMBER 0) POS) ((= NUMBER 0) ZERO) ((< NUMBER 0) NEG))))
 
-TODO:
-The system does not currently have support for nested with-forced-vars,
-macroexpansions like this can happen:
-
-(macroexpand-1 '(with-forced-vars (x y) (with-forced-vars (x y) (+ x y))))
-=> (PROGN
-    (WITH-FORCED-VARS ((FORCE X) (FORCE Y))
-      (+ (FORCE X) (FORCE Y))))
-
-while it's essentially perfectly fine it calls delay-forcer unnecessarily.
-To get rid of that bit of an annoyance, install with-nested-forced-vars -binding into the system.
-
-(The reason that delay-forcer can handle such apparently erroneous code is that delay-forcer matches
- and transforms only symbols in the given body).
+FIXED: the system no recognizes also with-forced-vars "binding" expressions..
+Now it's up to the users to introduce more recognized binding expressions.
 </pre>
