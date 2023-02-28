@@ -1,3 +1,4 @@
+<pre>
 To make the delay system more useable in practice, in this first phase it is augmented with the 
 following macros:
 
@@ -10,8 +11,8 @@ following macros:
 The  following example code show how these macros can be used. The variables that 
 are in bold and italic will be automatically forced in the resulting expression: <br /> <br />
 
-(let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) <br />
-      (e (delay 1)) (x (delay 1)) (z (delay 1)) ) <br />
+(let ((a (delay 1)) (b (delay 1)) (c 1) (d 1)
+      (e (delay 1)) (x (delay 1)) (z (delay 1)) )
   (with-forced-vars (a b e x) <br />
     (+ (funcall (flambda (x) :repeat <br />
                   (fdefun z+x (z) () (+ **_z_** **_x_**)) <br />
@@ -55,3 +56,4 @@ Otherwise, the following expression, for example: <br />
 Would be macro-expanded into the expression below, which would clearly produce errors when compiling or interpreting: <br />
 
 (flambda (x) (let (((force x) (+ (force x) 1)) (force x))) <br />
+</pre>
