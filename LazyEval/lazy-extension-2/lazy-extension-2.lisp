@@ -207,8 +207,3 @@
   'fdefun
   #'fdefun-matcher-fn
   #'fdefun-forcer-fn )
-
-
-(defmacro fv-flambda (non-params params &rest body)
-  `(flambda ,params
-     (with-forced-vars ,non-params ,@body) ) )
