@@ -11,7 +11,7 @@ to use the language, the lazy-extension-2 uses a syntax similar to Doug Hyote's 
        (force b) c d (force e) (force x) ) )
   (my-f b e 1) )
   
-In flambda and fdefun, every variable that is preceded by the syntax f#, will be forced within the body, unless
+In flambda and fdefun, every variable that contains the prefix f#, will be forced within the body, unless
 some other nested binding form binds them. For example, the above code example will be equal to the one below:
 
 (let ((b (delay 1)) (e (delay 1)) (x (delay 1)))
