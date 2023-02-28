@@ -25,13 +25,12 @@ The  following example code show how these macros can be used:
        b e ) ) ) ;; +1+1
 =>	13  ;; 4 + 7 + 1 + 1 = 13
 
-The macroexpander would then turn the code into:
+The above example equals the following code:
 
 (let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
       (e (delay 1)) (x (delay 1)) (z (delay 1)) )
-  (with-forced-vars (a b e x)
-    (+ (funcall (flambda (x) :repeat
-                  (fdefun z+x (z) () (+ (force z) (force x)))
+    (+ (funcall (lambda (x)
+                  (defun z+x (z) () (+ (force z) (force x)))
                     (z+x) )
                   (delay (* 3 (force x))) ) ;; => 4
        (let ((b ((lambda (x) (+ (force a) (force b) x c)) (force e)))
