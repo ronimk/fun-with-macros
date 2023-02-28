@@ -38,4 +38,5 @@ To eliminate the above pattern, if necessary, the following macro can be utilize
   `(flambda ,params
      (with-forced-vars ,non-params ,@body) ) )
 
+which would require the installing of the fv-lambda -form into the system.
 </pre>
