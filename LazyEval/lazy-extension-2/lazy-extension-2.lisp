@@ -2,31 +2,7 @@
 `(let ((it ,test-form))
 (if it ,then-form ,else-form)))
 
-(defconstant unforced (gensym))
 
-(defstruct delay forced closure)
-
-(defmacro delay (exp)
-  (let ((self (gensym)))
-    `(let ((,self (make-delay :forced unforced)))
-       (setf (delay-closure ,self)
-              (lambda ()
-                (setf (delay-forced ,self) ,exp)
-                (setf (delay-closure ,self) nil)
-                (delay-forced ,self) ) )
-        ,self ) ) )
-
-(defun force-exp-p (exp)
-  (and (listp exp)
-       (equal (first exp) 'force) ) )
-       
-(defun force (x)
-  (if (delay-p x)
-      (if (eq (delay-forced x) unforced)
-          (funcall (delay-closure x))
-          (delay-forced x) )
-      x ) )
-      
 (defstruct binding-form name match-fn body-forcer-fn)
 (defparameter *installed-binding-forms* nil)
 
