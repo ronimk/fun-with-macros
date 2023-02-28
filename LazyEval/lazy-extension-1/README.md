@@ -12,17 +12,17 @@ following macros:
 The  following example code show how these macros can be used:
 
 (let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
-      (e (delay 1)) (x (delay 1)) (z (delay 1)) )
-  (with-forced-vars (a b e x)
-    (+ (funcall (flambda (x) :repeat
-                  (fdefun z+x (z) () (+ z x))
-                    (z+x) )
-                  (delay (* 3 x)) ) ;; => 4
-       (let ((b ((lambda (x) (+ a b x c)) e)) ;; b := 4
-              e )                                               ;; e := NIL
-         (+ b c x d ;; => 4+1+1+1
-           (if (null e) 0 1) ) ) ;; +0 = 7
-       b e ) ) ) ;; +1+1
+      (e (delay 1)) (x (delay 1)) (z (delay 1)) )
+  (with-forced-vars (a b e x)
+    (+ (funcall (flambda (x) :repeat
+                  (fdefun z+x (z) () (+ z x))
+                  (z+x) )
+                  (delay (* 3 x)) ) ;; => 4
+       (let ((b ((lambda (x) (+ a b x c)) e)) ;; b := 4
+              e )                             ;; e := NIL
+         (+ b c x d ;; => 4+1+1+1
+           (if (null e) 0 1) ) ) ;; +0 = 7
+       b e ) ) ) ;; +1+1
 =>	13  ;; 4 + 7 + 1 + 1 = 13
 
 The above example equals the following code:
