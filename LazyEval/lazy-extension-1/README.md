@@ -30,7 +30,7 @@ The above example equals the following code:
 (let ((a (delay 1)) (b (delay 1)) (c 1) (d 1) 
       (e (delay 1)) (x (delay 1)) (z (delay 1)) )
     (+ (funcall (lambda (x)
-                  (defun z+x (z) () (+ (force z) (force x)))
+                  (defun z+x () (+ (force z) (force x)))
                     (z+x) )
                   (delay (* 3 (force x))) ) ;; => 4
        (let ((b ((lambda (x) (+ (force a) (force b) x c)) (force e)))
