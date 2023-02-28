@@ -71,8 +71,8 @@
 (defmacro fflambda (params &body body)
   `(flambda ,params :repeat ,@body) )
     
-(defmacro ffdefun (params &body body)
-  `(fdefine ,params :repeat ,@body) )
+(defmacro ffdefun (name params &body body)
+  `(fdefun ,name ,params :repeat ,@body) )
 
   
 ;; Next, install the lambda-expression into the system:
