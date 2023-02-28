@@ -71,5 +71,69 @@ Would be macro-expanded into the expression below, which would clearly produce e
 
 (flambda (x) (let (((force x) (+ (force x) 1)) (force x)))
 
-TODO: add the syntax of the language here
+The syntax of the new language extensions:
+(with-forced-vars vars body)
+(flambda      forced-variable-list  [parameter-list | :repeat]  function-body)
+(fdefun name  forced-variable-list  [parameter-list | :repeat]  function-body)
+(fflambda     forced-parameter-list  function-body)
+(ffdefun name forced-parameter-list  function-body)
+
+In short,
+(fflambda params body)
+translates into
+(flambda params :repeat body)
+
+And,
+(ffdefun name params body)
+translates into
+(fdefun name :repeat params body)
+
+When used, all free occurrences of a variable in the body of a function defined by flambda or fdefun will be
+automatically forced if that variable also appears in the forced-variable-list argument.
+
+Using fdefun, we can write arithmetic-if -function as illustrated below:
+
+;; method 1:
+(fdefun arithmetic-if-f-1 (number pos zero neg) (number pos zero neg)
+  (cond ((> number 0) pos)
+        ((= number 0) zero)
+        ((< number 0) neg) ) )
+;; is the same as method 2:
+(fdefun arithmetic-if-f-2 (number pos zero neg) :repeat
+  (cond ((> number 0) pos)
+        ((= number 0) zero)
+        ((< number 0) neg) ) )
+
+but when the forced function has identical forced-variable-list and parameter-list, instead of using repeat,
+one can also write:
+
+;; Method 3 is essentially the same as methods 1 and 2:
+(ffdefun arithmetic-if-f-3 (number pos zero neg)
+  (cond ((> number 0) pos)
+        ((= number 0) zero)
+        ((< number 0) neg) ) )
+
+Eventually all flambda and fdefun expressions get translated into lambda/fdefun expressions with nested with-forced-vars:
+(macroexpand-1 '(fdefun arithmetic-if-f (number pos zero neg) (number pos zero neg)
+  (cond ((> number 0) pos)
+        ((= number 0) zero)
+        ((< number 0) neg) ) ) )
+=> (DEFUN ARITHMETIC-IF-F (NUMBER POS ZERO NEG)
+     (WITH-FORCED-VARS (NUMBER POS ZERO NEG)
+       (COND ((> NUMBER 0) POS) ((= NUMBER 0) ZERO) ((< NUMBER 0) NEG))))
+
+TODO:
+The system does not currently have support for nested with-forced-vars,
+macroexpansions like this can happen:
+
+(macroexpand-1 '(with-forced-vars (x y) (with-forced-vars (x y) (+ x y))))
+=> (PROGN
+    (WITH-FORCED-VARS ((FORCE X) (FORCE Y))
+      (+ (FORCE X) (FORCE Y))))
+
+while it's essentially perfectly fine it calls delay-forcer unnecessarily.
+To get rid of that bit of an annoyance, install with-nested-forced-vars -binding into the system.
+
+(The reason that delay-forcer can handle such apparently erroneous code is that delay-forcer matches
+ and transforms only symbols in the given body).
 </pre>
