@@ -122,6 +122,8 @@ Eventually all flambda and fdefun expressions get translated into lambda/fdefun 
      (WITH-FORCED-VARS (NUMBER POS ZERO NEG)
        (COND ((> NUMBER 0) POS) ((= NUMBER 0) ZERO) ((< NUMBER 0) NEG))))
 
-FIXED: the system no recognizes also with-forced-vars "binding" expressions..
+FIXED: the system now recognizes with-forced-vars "binding" expressions.
+       While this wasn't technically necessary because of the way the delay-forces works,
+       It does make the code more elegant.
 Now it's up to the users to introduce more recognized binding expressions.
 </pre>
