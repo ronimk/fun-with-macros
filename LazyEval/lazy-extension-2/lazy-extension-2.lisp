@@ -145,20 +145,20 @@
   'let
   #'let-matcher-fn
   #'let-forcer-fn )
-  
+
+; With-forced-vars -form installation:
 (defun with-forced-vars-matcher-fn (exp)
   (and (listp exp)
        (eq (car exp) 'with-forced-vars) ) )
 
 (defun with-forced-vars-forcer-fn (forced-vars exp)
-  (let* ((new-forced-vars (cadr exp))
-         (all-forced-vars (union
-                             new-forced-vars
-                             forced-vars) )
+  (let* ((dont-force-these (cadr exp))
+         (force-these (set-difference forced-vars
+                                      dont-force-these) )
          (new-body-exps (mapcar #'(lambda (e)
-                                    (delay-forcer all-forced-vars e) )
+                                    (delay-forcer force-these e) )
                                 (cddr exp)) ) )
-  `(progn ,@new-body-exps) ) )
+  `(with-forced-vars ,@new-body-exps) ) )
 
 (install-binding-form
   'with-forced-vars
