@@ -6,10 +6,12 @@
 (defstruct binding-form name match-fn body-forcer-fn)
 ;; Each installed binding form (lambda, let, etc...) must have
 ;; 1. a name
-;; 2. a binding form matcher function
+;; 2. a binding form matcher function, which takes exactly one argument: the sexp to be matced against
 ;; 3. a binding form "body forcer function" that will transform
 ;;    all the free variables that are being automatically
 ;;    forced by the surrounding code into forced variables.
+;;    Must take in exactly two arguments: a list of the automatically forceable variables
+;;                                        and the sexp onto which the automatic forcing will be performed.
 
 (defparameter *installed-binding-forms* nil)
 
@@ -57,9 +59,6 @@
       `(progn ,@(mapcar #'(lambda (exp)
                             (delay-forcer var-list exp) )
                         body )) ) )
-;; TODO: with-forced-vars is not actually recognized by the system yet,
-;;       so install it into the system. (See README.md) for why this isn't
-;;       technically a problem but should still be fixed...
   
 (defmacro flambda (forced-var-list params &body body)
   (let ((params (if (eq params :repeat) forced-var-list params)))  ;; careful with shared list structures, Eugene!
@@ -77,8 +76,39 @@
 (defmacro ffdefun (name params &body body)
   `(fdefun ,name ,params :repeat ,@body) )
 
+
+;; First, install with-forced-vars -expression into the system:
+;;
+;; for reference, the parameter positions in with-forced-vars -call:
+;;
+;; (with-forced-vars forced-vars body-1 body-2 ... body-n)
+;; (car              cadr        cddr....................)
+(defun with-forced-vars-matcher-fn (exp)
+  (and (listp exp)
+       (eq (car exp) 'with-forced-vars) ) )
+
+(defun with-forced-vars-forcer-fn (forced-vars exp)
+  (let* ((new-forced-vars (cadr exp))
+         (all-forced-vars (union
+                             new-forced-vars
+                             forced-vars) )
+         (new-body-exps (mapcar #'(lambda (e)
+                                    (delay-forcer all-forced-vars e) )
+                                (cddr exp)) ) )
+  `(progn ,@new-body-exps) ) )
+  
+(install-binding-form
+  'with-forced-vars
+  #'with-forced-vars-matcher-fn
+  #'with-forced-vars-forcer-fn )
+
   
 ;; Next, install the lambda-expression into the system:
+;;
+;; for reference, the parameter positions in lambda-call:
+;;
+;; (lambda params body-1 body-2 ... body-n)
+;; (car    cadr   cddr....................)
 (defun lambda-matcher-fn (exp)
   (and (listp exp)
        (eq (car exp) 'lambda) ) )
@@ -101,6 +131,11 @@
 
 
 ;; Next, install the let-expression into the system:
+;;
+;; for reference, the parameter positions in let-call:
+;;
+;; (let let-bindings body-1 body-2 ... body-n)
+;; (car cadr         cddr....................)
 (defun let-matcher-fn (exp)
   (and (listp exp)
        (eq (car exp) 'let) ) )
