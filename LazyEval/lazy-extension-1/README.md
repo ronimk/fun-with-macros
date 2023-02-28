@@ -1,4 +1,5 @@
 
+<pre>
 To make the delay system more useable in practice, in this first phase it is augmented with the 
 following macros:
 
@@ -56,3 +57,4 @@ Otherwise, the following expression, for example:
 Would be macro-expanded into the expression below, which would clearly produce errors when compiling or interpreting: <br />
 
 (flambda (x) (let (((force x) (+ (force x) 1)) (force x))) <br />
+</pre>
