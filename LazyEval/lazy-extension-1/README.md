@@ -3,10 +3,10 @@ To make the delay system more useable in practice, in this first phase it is aug
 following macros:
 
 * with-forced-vars
-* flambda  (forced-lambda)
-* fdefun   (forced-defun)
-* fflambda (fully-forced-lambda)
-* ffdefun  (fully-forced-defun)
+* flambda  (forced-lambda)
+* fdefun   (forced-defun)
+* fflambda (fully-forced-lambda)
+* ffdefun  (fully-forced-defun)
  
 The  following example code show how these macros can be used. The variables that 
 are in bold and italic will be automatically forced in the resulting expression:
@@ -15,14 +15,14 @@ are in bold and italic will be automatically forced in the resulting expression:
       (e (delay 1)) (x (delay 1)) (z (delay 1)) ) <br />
   (with-forced-vars (a b e x) <br />
     (+ (funcall (flambda (x) :repeat <br />
-         (fdefun z+x (z) () (+ **_z_** **_x_**)) <br />
-                    (z+x) ) <br />
-             (delay (* 3 **_x_**)) ) ;; => 4 <br />
-       (let ((b ((lambda (x) (+ **_a_** **_b_** x c)) **_e_**)) ;; b := 4 <br />
-              e )                             ;; e := NIL <br />
-         (+ b c **_x_** d ;; => 4+1+1+1 <br />
-            (if (null e) 0 1) ) ) ;; +0 = 7 <br />
-       **_b_** **_e_** ) ) ) ;; +1+1 <br />
+                  (fdefun z+x (z) () (+ **_z_** **_x_**)) <br />
+                    (z+x) ) <br />
+                  (delay (* 3 **_x_**)) ) ;; => 4 <br />
+       (let ((b ((lambda (x) (+ **_a_** **_b_** x c)) **_e_**)) ;; b := 4 <br />
+              e )                                               ;; e := NIL <br />
+         (+ b c **_x_** d ;; => 4+1+1+1 <br />
+           (if (null e) 0 1) ) ) ;; +0 = 7 <br />
+       **_b_** **_e_** ) ) ) ;; +1+1 <br />
 =>	13  ;; 4 + 7 + 1 + 1 = 13 <br />
 
 As can be seen, nested binding forms, like lambda and let, inside these macros will override the automatic forcing mechanism.
@@ -32,15 +32,15 @@ macro programmers.
 
 For example, if a user has created the following notations for writing functions:
 
-(my-func -> x y z        ; define a new function named my-func <br />
-  (body-expression-1     ; note that the arrow identifier is not <br />
-   body-expression-2     ; at the beginning of the list. <br />
-   body-expression-3 ) ) <br />
+(my-func -> x y z        ; define a new function named my-func <br />
+  (body-expression-1     ; note that the arrow identifier is not <br />
+   body-expression-2     ; at the beginning of the list. <br />
+   body-expression-3 ) ) <br />
 
-(-> x y z                ; create a new anonymous function <br />
-  (body-expression-1 <br />
-   body-expression-2 <br />
-   body-expression-3 ) ) <br />
+(-> x y z                ; create a new anonymous function <br />
+  (body-expression-1 <br />
+   body-expression-2 <br />
+   body-expression-3 ) ) <br />
 
 They can be installed into the system with the function install-binding-form.
 
