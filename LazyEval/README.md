@@ -1,5 +1,5 @@
 Paul Graham's On Lisp (pp. 211-212) contains a simple language for lazy evaluation.
-The aim of this exercise is to extend it and make a few abstractions that makes it easier to program in the Lazy Evaluation language of On Lisp.
+The aim of this exercise is to extend it and make a few abstractions that makes it easier to program in it.
 The task is divided into two parts:
 
 1. make a first rudimentary draft for the extensions.
