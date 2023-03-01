@@ -5,4 +5,4 @@ The task is divided into two parts:
 1. make a first rudimentary draft for the extensions.
 2. combine the draft version with a variable notation similar to Doug Hyote's defmacro-bang language to make the extensions more elegant to use.
 
-A slightly modified version of the Lazy Evaluation language is utilized, in hopes of helping the garbage collector get rid of unused and unneeded data.
+A slightly modified version of the Lazy Evaluation language is utilized, to help the garbage collector get rid of unused and unneeded data.
