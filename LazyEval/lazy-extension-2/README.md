@@ -4,8 +4,8 @@ and therefore needed additional fflambda and ffdefun primitives to make it more 
 to use the language, the lazy-extension-2 uses a syntax similar to Doug Hyote's defmacro-bang:
 
 (let ((b (delay 1)) (e (delay 1)) (x (delay 1)))
-  (fdefun my-f (f#a f#c d)
-    (+ a (let ((b (funcall (flambda (f#x d) (+ x c d)) e d))
+  (fdefun my-f (f:a f:c d)
+    (+ a (let ((b (funcall (flambda (f:x d) (+ x c d)) e d))
                 e )
            (+ b c d (if (null e) 0 1) (force x)) )
        (force b) c d (force e) (force x) ) )
