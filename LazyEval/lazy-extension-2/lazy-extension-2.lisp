@@ -41,7 +41,7 @@
   (and (symbolp param)
        (> (length (symbol-name param)) 2)
        (string-equal (symbol-name param)
-                     "f#"
+                     "f:"
                      :start1 0
                      :end1 2 ) ) ) 
 
